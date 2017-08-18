@@ -157,10 +157,12 @@ function AS() {
       } else {
         right = 1;
       }
+
       resultString += " ";
+
       if (parsedTree[el].type == "inst") {
         parsedTree[el].arg = checkTable(labelTable, parsedTree[el].arg);
-        var target = " " + pad(Math.floor(parsedTree[el].arg / 2));
+        var target = " " + pad(Math.floor(parsedTree[el].arg));
         var d = parsedTree[el].arg % 2;
         resultString += inst[parsedTree[el].content.toUpperCase()](target, d);
       } else { // word or wfill
@@ -171,7 +173,10 @@ function AS() {
         right = 1;
       }
     }
-    return resultString;
+    
+    if (!right) resultString += " 00 000"
+
+    return resultString + "\n";
   }
 
   function checkTable(table, name) {
@@ -188,7 +193,7 @@ function AS() {
     if(n == undefined) n = 3;
     var strNum = number.toString(16).padStart(n, "0");
     if (strNum.length == 10) 
-      return strNum.slice(0, 2) + " " + strNum.slice(2, 5 ) + " " +
+      return strNum.slice(0, 2) + " " + strNum.slice(2, 5) + " " +
              strNum.slice(5, 7) + " " + strNum.slice(7, 10);
     return strNum;
   }
