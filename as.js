@@ -18,9 +18,27 @@ var lexer = new jslex( {
               return e != "";
             });
             if(splitedText.length > 1){
-              return {type:"inst", content: splitedText[0],
-                      arg: splitedText[1].slice(splitedText[1].indexOf("(") + 1,
-                      splitedText[1].indexOf(")"))};
+              // extract argment
+              var instArg = ""
+              if(this.text.includes("(")){
+                var startIndex = this.text.indexOf("(") + 1;
+                var commaIndex = this.text.indexOf(",", startIndex);
+                var endIndex = this.text.indexOf(")", startIndex);
+                if(commaIndex != -1){
+                  endIndex = commaIndex;
+                }
+                instArg = this.text.slice(startIndex, endIndex).trim();
+              }
+              //
+              var instMod = "";
+              if(splitedText[1][0] != "M"){       // pipe and minus
+                instMod = splitedText[1][0];
+              }else if(splitedText[1][1] == "Q"){ // LOAD MQ
+                instMod = splitedText[1][1];
+                if(instArg != "") instMod += "X"; // LOAD MQ MX
+              }
+              return {type:"inst", content: splitedText[0] + instMod,
+                      arg: instArg};
             }else{
               return {type:"inst", content: splitedText[0]};
             }
@@ -37,13 +55,13 @@ function AS() {
   var parsedTree = []
   var setTable = []
   var labelTable = []
-  var inst = 	{ 'LD'      : function (a, d) { return  "01"           + a; },
-                'LDmq'    : function (a, d) { return  "0A 000"          ; },
-                'LDmq_mx' : function (a, d) { return  "09"           + a; },
-                'LD|'     : function (a, d) { return  "03"           + a; },
-                'LD-'     : function (a, d) { return  "02"           + a; },
-                'ST'      : function (a, d) { return  "21"           + a; },
-                'STaddr'  : function (a, d) { return ["12", "13"][d] + a; },
+  var inst = 	{ 'LOAD'    : function (a, d) { return  "01"           + a; },
+                'LOADQ'   : function (a, d) { return  "0A 000"          ; },
+                'LOADQX'  : function (a, d) { return  "09"           + a; },
+                'LOAD|'   : function (a, d) { return  "03"           + a; },
+                'LOAD-'   : function (a, d) { return  "02"           + a; },
+                'STOR'    : function (a, d) { return  "21"           + a; },
+                'STORA'   : function (a, d) { return ["12", "13"][d] + a; },
                 'ADD'     : function (a, d) { return  "05"           + a; },
                 'ADD|'    : function (a, d) { return  "07"           + a; },
                 'SUB'     : function (a, d) { return  "06"           + a; },
@@ -52,7 +70,7 @@ function AS() {
                 'DIV'     : function (a, d) { return  "0C"           + a; },
                 'RSH'     : function (a, d) { return  "15 000"          ; },
                 'LSH'     : function (a, d) { return  "14 000"          ; },
-                'JMP'     : function (a, d) { return ["0D", "0E"][d] + a; },
+                'JUMP'    : function (a, d) { return ["0D", "0E"][d] + a; },
                 'JUMP+'   : function (a, d) { return ["10", "0F"][d] + a; }
               }
 
@@ -61,7 +79,7 @@ function AS() {
     code = code.replace("\t", " ");
     function insertInTree(el) {
       if(el){
-        if(el.type == "inst" && !(el.content in inst)){
+        if(el.type == "inst" && !(el.content.toUpperCase() in inst)){
           throw "Invalid instruction " + el.content;
         }
         parsedTree.push(el);
@@ -139,7 +157,7 @@ function AS() {
         parsedTree[el].arg = checkTable(labelTable, parsedTree[el].arg);
         var target = " " + pad(Math.floor(parsedTree[el].arg / 2));
         var d = parsedTree[el].arg % 2;
-        resultString += inst[parsedTree[el].content](target, d);
+        resultString += inst[parsedTree[el].content.toUpperCase()](target, d);
       }else{ // word or wfill
         parsedTree[el].args[1] = checkTable(labelTable, parsedTree[el].args[1]);
         for (var i = 0; i < parsedTree[el].args[0]; i++) {
@@ -177,15 +195,15 @@ code =
 ".set INICIO 0x000 # teste\n\
 .org INICIO\n\
 laco:\n\
-LD  \t(x1)\n\
+  LOAD M(x1)\n\
 laco2:\n\
-ADD (x2) # adasd daas dfa labelerrado:\n\
-JMP (cont)\n\
+ADD M(x2) # adasd daas dfa labelerrado:\n\
+JUMP M(cont)\n\
 .align 1\n\
 cont:\n\
 RSH\n\
-ST (av) # .direrrada\n\
-JUMP+ (laco2)\n\
+STOR M(av) # .direrrada\n\
+JUMP+ M(laco2)\n\
 .align 1\n\
 x1: .word 0000000000\n\
 x2: .word 0000000002 # 908\n\
