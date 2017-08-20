@@ -77,7 +77,7 @@ window.onload = function () {
 
   myLayout.registerComponent( 'simulator', function( container, state ){
     this.container = container;
-    var sim = $( '<iframe class="simFrame" src="index.html"></iframe>');
+    var sim = $( '<iframe class="simFrame" src="simulator/index.html"></iframe>');
     container.getElement().append(sim);
     sim.ready(function () {
       sim.contents().find('#memoryMapEntry').val(state.text)
@@ -144,6 +144,10 @@ window.onload = function () {
       exec: function(editor) {
         if(state.key == "untitled"){
           $.alertable.prompt('File Name').then(function(data) {
+            if(data.value == ""){
+              $.alertable.alert("A file name must be provided.");
+              return;
+            }
             state.key = "CODE" + data.value;
             localStorage[state.key] = editor.getValue();
             localStorage["untitled"] = "";
@@ -199,11 +203,19 @@ window.onload = function () {
       var container = stack.getActiveContentItem().container
       var editor = container.editor;
       if(editor){
+        try{
+          var as = new AS();
+          var binary = as.assemble(editor.getValue());
+        }
+        catch(err){
+          $.alertable.alert("Error:\n" + err);
+          return;
+        }
         var newItemConfig = {
              title: "Simulator (" + container.title + ")",
              type: 'component',
              componentName: 'simulator',
-             componentState: { text: editor.getValue() },
+             componentState: { text: binary },
              width: 0.2 * window.innerWidth
          };
 
