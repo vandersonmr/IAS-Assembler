@@ -79,7 +79,7 @@ window.onload = function () {
     this.container = container;
     var sim = $( '<iframe class="simFrame" src="simulator/index.html"></iframe>');
     container.getElement().append(sim);
-    sim.ready(function () {
+    sim.load(function () {
       sim.contents().find('#memoryMapEntry').val(state.text)
     })
   });
