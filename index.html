@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- META -->
+  <title>IAS Simulator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="" />
+  
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="HTML-KickStart-master/css/kickstart.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="HTML-KickStart-master/style.css" media="all" /> 
+  
+  <!-- Javascript -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="HTML-KickStart-master/js/kickstart.js"></script>
+  
+  <script src="uiScript.js"></script>
+  <script src="ias.js"></script>
+  <script src="execute.js"></script>
+</head>
+
+<body>
+
+<div class="grid">
+  
+  <!-- Page top -->
+  <div class="col_12 callout" style="margin-top:20px;">
+    <h2 style="margin: 10px 20px 10px 20px" align="left" >IAS Simulator - V 1.0.4</h2>
+  </div>
+  
+  <!-- Page body -->
+  <div class="col_12" style="background: #FFFFFF; margin-top: -0.5em; margin-bottom: 20px">
+    
+
+    <!-- Memory map Area -->
+    <div class="col_4" align="center" style="margin-top: 28px">
+      <button class= "medium pop" onclick="loadMapInput()"><i class="icon-save"></i> Load Mem. Map into IAS Memory </button>
+      <br/><br/>
+      <textarea id="memoryMapEntry" placeholder="Enter Memory Map" style="width: 80%; height: 600px" ></textarea>
+	  <br/><br/><br/>
+	  <button class= "medium pop" onclick="loadMapFile()"><i class="icon-upload-alt"></i>  Load Map from File </button>
+	  <input class="file" id="fileload" type="file" style ="font-size: 0.8em; margin-top: 2%"></input>
+    </div>
+    
+    
+    <!-- START: Simulator area -->
+    <div class="col_8" >
+      
+      <!-- Buttons -->
+      <div class="col_12" style="margin-top: 20px;">
+        <button class="medium pop" id="resetbut" onclick="resetAll()"><i class="icon-undo"></i> Reset </button>
+        <button class="medium pop" type="button" onclick="reboot()" ><i class="icon-upload"></i> Zero Reg/Mem</button>
+        <button class= "medium pop" id="nextbut" onclick="runNext()"><i class="icon-step-forward"></i> Next </button>
+        <button class= "medium pop" id="stepbut" onclick="runStep()"><i class="icon-fast-forward"></i> Step </button>
+        <button class= "medium pop" id="allbut" onclick="runAll()"><i class="icon-play-circle"></i> Run All </button>
+        <label for="textset"> ms/cycle</label>
+        <input onkeypress="return validateNumber(event);" name="textset" id = "speedset" placeholder="1000" type="text" size = "5">
+        <button type="button pop" class="small blue" onclick="setSpeed()">Set</button>
+      </div>
+      
+    </div>
+    <!-- END: Simulator area -->
+    
+  
+    <!-- Registers -->
+    <div class="col_2" align="center">
+      
+      <div class="col_2" align="center">
+        <table cellspacing="0" cellpadding="0" align="center">
+	  <thead><tr>
+              <th></th>
+              <th>VALUE</th>
+	  </tr></thead>
+	  <tbody><tr>
+              <td>PC</td>
+              <td><input id="pc_out" type="text" placeholder="0000000000" disabled="disabled" size= 13/></td>
+	    </tr><tr>
+              <td>AC</td>
+              <td><input id="ac_out" type="text" placeholder="0000000000" disabled="disabled" size= 13/></td>
+	    </tr><tr>
+              <td>MQ</td>
+              <td><input id="mq_out" type="text" placeholder="0000000000" disabled="disabled" size= 13/></td>
+	    </tr><tr>
+              <td>MBR</td>
+              <td><input id="mbr_out" type="text" placeholder="0000000000" disabled="disabled" size= 13/></td>
+	    </tr><tr>
+              <td>IR</td>
+              <td><input id="ir_out" type="text" placeholder="0000000000" disabled="disabled" size= 13/>
+		<br/>
+		<input id="op_out" type="text" placeholder="?" disabled="disabled" size= 13/></td>
+	    </tr><tr>
+              <td>IBR</td>
+              <td><input id="ibr_out" type="text" placeholder="0000000000" disabled="disabled" size= 13/></td>
+	    </tr><tr>
+              <td>MAR</td>
+              <td><input id="mar_out" type="text" placeholder="0000000000" disabled="disabled" size= 13/></td>        
+	    </tr>
+        </table>
+      </div>      
+    </div>
+    
+    <!-- IAS SVG -->
+    <div class="col_6" align="center">
+      <p><b>IAS COMPUTER</b></p>
+      <svg width="477" height="317" xmlns="http://www.w3.org/2000/svg">
+         <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+         <g>
+          <title>background</title>
+          <rect fill="#ffffff" id="canvas_background" height="319" width="479" y="-1" x="-1"/>
+          <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+           <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+          </g>
+         </g>
+         <g>
+          <title>Layer 1</title>
+          <rect id="main_box" height="53" width="134" y="16.949997" x="35.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="mar_box" height="24" width="44" y="114.949997" x="48.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_3" y="47.949997" x="48.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Main memory</text>
+          <rect id="pc_box" height="24" width="44" y="115.949997" x="117.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="ir_box" height="24" width="44" y="180.949997" x="48.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="ibr_box" height="24" width="44" y="179.949997" x="118.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="control_box" height="49" width="114" y="234.5" x="49.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="svg_8" height="0" width="2" y="357.5" x="326.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="mar_main" y2="68.499998" x2="65.5" y1="114.499996" x1="65.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="ibr_ir" y2="192.5" x2="93.5" y1="192.5" x1="117.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="ir_control" y2="234.5" x2="70.5" y1="204.5" x1="70.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <rect stroke-dasharray="2,2" id="svg_17" height="189" width="181" y="105.5" x="17.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <path id="ibr_mar" d="m77.5,138.5l-0.5,12.5l67,0c0,10 0,20 0,30" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="pc_mar" y2="121.5" x2="116.5" y1="121.5" x1="92.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="mar_pc" y2="130.5" x2="92.5" y1="130.5" x1="118.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="svg_28" y2="181.5" x2="59.5" y1="139.5" x1="59.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="mbr_ibr" y2="163.499998" x2="128.5" y1="179.499999" x1="128.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <rect id="svg_30" height="54" width="139" y="18.5" x="292.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <rect id="mbr_box" height="24" width="44" y="151.949997" x="341.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="ac_box" height="24" width="44" y="265.949997" x="301.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="mq_box" height="24" width="44" y="265.949997" x="379.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <rect id="ula_box" height="36" width="137" y="202.5" x="295.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="mbr_ir" y2="162.5" x2="58.5" y1="163.5" x1="340.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <path id="svg_38" d="m324.5,128.5" opacity="0.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <path id="mbr_main" d="m349.5,152.5l-0.5,-54.5l-236,-1l0,-27" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="svg_41" y2="151.499998" x2="369.5" y1="72.5" x1="369.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="svg_42" y2="151.500001" x2="378.5" y1="72.5" x1="378.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <path id="main_mbr" d="m359.5,151.5c-1,0 0,-71 -0.5,-71.5c0.5,0.5 -169.5,-0.5 -170,-1c0.5,0.5 1.5,-37.5 1,-38c0.5,0.5 -19.5,-0.5 -20,-1" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="ula_mbr" y2="202.5" x2="354.5" y1="175.5" x1="354.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="mbr_ula" y2="203.5" x2="373.5" y1="175.5" x1="373.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="ac_ula" y2="266.5" x2="316.5" y1="238.5" x1="316.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="ula_ac" y2="265.5" x2="332.5" y1="238.5" x1="332.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="mq_ula" y2="265.5" x2="389.5" y1="239.5" x1="389.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="ula_mq" y2="266.5" x2="403.5" y1="238.5" x1="403.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <line stroke-linecap="null" stroke-linejoin="null" id="mq_ac" y2="278.5" x2="344.5" y1="278.5" x1="379.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <rect stroke-dasharray="2,2" id="svg_53" height="189" width="181" y="108.5" x="271.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+          <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_54" y="50.5" x="311.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Input / Output</text>
+          <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_55" y="257.5" x="61.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Control</text>
+          <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_56" y="273.5" x="83.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">circuits</text>
+          <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_57" y="132.5" x="54.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">MAR</text>
+          <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_58" y="132.5" x="130.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">PC</text>
+          <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_59" y="197.5" x="62.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">IR</text>
+          <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_60" y="196.5" x="128.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">IBR</text>
+          <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_61" y="168.5" x="347.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">MBR</text>
+          <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="14" id="svg_63" y="219.5" x="305.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Logic and arithmetic</text>
+          <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="14" id="svg_64" y="233.5" x="338.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">circuits</text>
+          <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_65" y="282.5" x="313.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">AC</text>
+          <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_66" y="282.5" x="392.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">MQ</text>
+          <rect id="svg_69" height="302.000013" width="459.999991" y="7.499987" x="7.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none" />
+          <path d="m60.775692,85.43335l4.878109,-6.812973l4.877983,6.812973l-2.439026,0l0,6.845566l-4.877926,0l0,-6.845566l-2.43914,0z" id="ar_mar_main" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m224.677704,79.091888l4.878174,-6.812973l4.878052,6.812973l-2.439056,0l0,6.845566l-4.878006,0l0,-6.845566l-2.439163,0z" transform="rotate(90 229.556 79.1082)" id="ar_main_mbr" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m223.702515,97.628456l4.878082,-6.812973l4.877975,6.812973l-2.439011,0l0,6.845573l-4.87793,0l0,-6.845573l-2.439117,0z" transform="rotate(-90 228.581 97.6447)" id="ar_mbr_main" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m223.702515,162.994324l4.878082,-6.812973l4.877975,6.812973l-2.439011,0l0,6.845566l-4.87793,0l0,-6.845566l-2.439117,0z" transform="rotate(-90 228.581 163.011)" id="ar_mbr_reg" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m373.458618,127.872375l4.878113,-6.812973l4.87796,6.812973l-2.438995,0l0,6.845581l-4.87793,0l0,-6.845581l-2.439148,0z" id="svg_43" opacity = "0"/>
+          <path STROKE-DASHARRAY="none" d="m364.678162,120.555298l4.878113,-6.812965l4.87796,6.812965l-2.438995,0l0,6.845573l-4.87793,0l0,-6.845573l-2.439148,0z" id="svg_50" opacity = "0"/>
+          <path STROKE-DASHARRAY="none" d="m349.556183,189.3358l4.878113,-6.812973l4.87796,6.812973l-2.438995,0l0,6.845566l-4.87793,0l0,-6.845566l-2.439148,0z" id="ar_ula_mbr" opacity = "0"  />
+          <path STROKE-DASHARRAY="none" d="m311.995178,253.238235l4.878113,-6.812973l4.877991,6.812973l-2.439026,0l0,6.845566l-4.87793,0l0,-6.845566l-2.439148,0z" id="ar_ac_ula" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m384.678131,253.238235l4.878113,-6.812973l4.87796,6.812973l-2.438995,0l0,6.845596l-4.87793,0l0,-6.845596l-2.439148,0z" id="ar_mq_ula" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m65.653732,219.579712l4.878113,-6.812988l4.87796,6.812988l-2.438995,0l0,6.845551l-4.87793,0l0,-6.845551l-2.439148,0z" transform="rotate(180 70.5318 219.596)" id="ar_ir_control" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m327.60498,254.70166l4.878143,-6.812988l4.87796,6.812988l-2.439026,0l0,6.845551l-4.87793,0l0,-6.845551l-2.439148,0z" transform="rotate(180 332.483 254.718)" id="ar_ula_ac" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m398.822754,254.70166l4.878143,-6.812988l4.87796,6.812988l-2.439026,0l0,6.845551l-4.87793,0l0,-6.845551l-2.439148,0z" transform="rotate(180 403.701 254.718)" id="ar_ula_mq" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m368.578827,191.287048l4.878143,-6.812988l4.87796,6.812988l-2.439026,0l0,6.845551l-4.87793,0l0,-6.845551l-2.439148,0z" transform="rotate(180 373.457 191.303)" id="ar_mbr_ula" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m123.700737,172.262665l4.878075,-6.812988l4.87796,6.812988l-2.439026,0l0,6.845551l-4.877899,0l0,-6.845551l-2.43911,0z" transform="rotate(180 128.579 172.279)" id="ar_mbr_ibr" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m54.432976,172.750473l4.878105,-6.812988l4.877922,6.812988l-2.439007,0l0,6.845551l-4.877892,0l0,-6.845551l-2.439129,0z" transform="rotate(180 59.311 172.767)" id="ar_mbr_ir" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m99.312271,192.750412l4.878082,-6.812973l4.877975,6.812973l-2.439011,0l0,6.845581l-4.87793,0l0,-6.845581l-2.439117,0z" transform="rotate(-90 104.19 192.767)" id="ar_ibr_ir" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m54.92207,149.823593l4.878113,-6.812973l4.877956,6.812973l-2.438992,0l0,6.845566l-4.87793,0l0,-6.845566l-2.439148,0z" id="ar_mbr_mar" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m101.263054,130.311295l4.878174,-6.812881l4.878052,6.812881l-2.439056,0l0,6.845551l-4.878006,0l0,-6.845551l-2.439163,0z" transform="rotate(90 106.141 130.328)" id="ar_mar_pc" opacity = "0" />
+          <path STROKE-DASHARRAY="none" d="m99.312263,121.530891l4.878082,-6.812973l4.877975,6.812973l-2.439011,0l0,6.845573l-4.87793,0l0,-6.845573l-2.439117,0z" transform="rotate(-90 104.19 121.547)" id="ar_pc_mar" opacity = "0" />
+          <line stroke-linecap="null" stroke-linejoin="null" id="plus_pc" y2="127.449997" x2="178.000013" y1="127.449997" x1="162.000013" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none" opacity = "0"/>
+          <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" id="plus_one" y="124.449997" x="166" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000" opacity = "0">+1</text>
+          <path stroke-dasharray="2,2" id="control_ula" d="m164,255.449997l71,-0.449997l0,-37l60,-1" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#0066ff" fill="none" opacity="0" />
+          <path id="ar_mq_ac" transform="rotate(-90, 362.839, 278.529)" d="m357.961761,278.512817l4.878082,-6.812988l4.87796,6.812988l-2.438995,0l0,6.845581l-4.87793,0l0,-6.845581l-2.439117,0z" opacity = "0" />
+          <path transform="rotate(-90, 110.802, 130.417)" id="ar_ibr_mar" d="m85.184074,130.401733l4.878082,-6.812973l4.877975,6.812973l-2.439011,0l0,6.845566l-4.87793,0l0,-6.845566l-2.439117,0z" opacity = "0" />
+
+         </g>
+      </svg>
+
+      <br/>
+      CYCLE: <input id="cycle_out" type="text" placeholder="none" disabled="disabled" size= 15/>
+      
+    </div>
+    
+    <div class="col_8" align="center">
+      
+      <p><b>MAIN MEMORY</b></p>
+      
+      <div class="col_4" align="center" >
+        <textarea id="mainMemory1" placeholder="EMPTY" style="width:100%; height: 300px" disabled></textarea>
+      </div>
+      
+      <div class="col_4" align="center">
+        <textarea id="mainMemory2" placeholder="EMPTY" style="width:100%; height: 300px" disabled></textarea>
+      </div>
+
+      <div class="col_4" align="center">
+        <textarea id="mainMemory3" placeholder="EMPTY" style="width:100%; height: 300px" disabled></textarea>
+      </div>
+
+    </div>
+    
+  </div>
+  
+</div>
+
+</body>
+</html>

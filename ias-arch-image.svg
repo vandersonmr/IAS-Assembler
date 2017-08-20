@@ -1,0 +1,62 @@
+<svg width="477" height="317" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>background</title>
+  <rect fill="#ffffff" id="canvas_background" height="319" width="479" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <rect id="svg_1" height="53" width="134" y="16.949997" x="35.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_2" height="24" width="44" y="114.949997" x="48.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_3" y="47.949997" x="48.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Main memory</text>
+  <rect id="svg_4" height="24" width="44" y="115.949997" x="117.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_5" height="24" width="44" y="180.949997" x="48.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_6" height="24" width="44" y="179.949997" x="118.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_7" height="49" width="114" y="234.5" x="49.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_8" height="0" width="2" y="357.5" x="326.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_9" y2="68.499998" x2="65.5" y1="114.499996" x1="65.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_14" y2="192.5" x2="93.5" y1="192.5" x1="117.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_16" y2="234.5" x2="70.5" y1="204.5" x1="70.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <rect stroke-dasharray="2,2" id="svg_17" height="189" width="181" y="105.5" x="17.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <path id="svg_25" d="m77.5,138.5l-0.5,12.5l67,0c0,10 0,20 0,30" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_26" y2="121.5" x2="116.5" y1="121.5" x1="92.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_27" y2="130.5" x2="92.5" y1="130.5" x1="118.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_28" y2="181.5" x2="59.5" y1="139.5" x1="59.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_29" y2="163.499998" x2="128.5" y1="179.499999" x1="128.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <rect id="svg_30" height="54" width="139" y="18.5" x="292.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <rect id="svg_31" height="24" width="44" y="151.949997" x="341.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_32" height="24" width="44" y="265.949997" x="301.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_33" height="24" width="44" y="265.949997" x="379.5" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <rect id="svg_34" height="36" width="137" y="202.5" x="295.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_36" y2="162.5" x2="58.5" y1="163.5" x1="340.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <path id="svg_38" d="m324.5,128.5" opacity="0.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <path id="svg_39" d="m349.5,152.5l-0.5,-54.5l-236,-1l0,-27" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_41" y2="151.499998" x2="369.5" y1="72.5" x1="369.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_42" y2="151.500001" x2="378.5" y1="72.5" x1="378.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <path id="svg_44" d="m359.5,151.5c-1,0 0,-71 -0.5,-71.5c0.5,0.5 -169.5,-0.5 -170,-1c0.5,0.5 1.5,-37.5 1,-38c0.5,0.5 -19.5,-0.5 -20,-1" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_45" y2="202.5" x2="354.5" y1="175.5" x1="354.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_46" y2="203.5" x2="373.5" y1="175.5" x1="373.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_47" y2="266.5" x2="316.5" y1="238.5" x1="316.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_48" y2="265.5" x2="332.5" y1="238.5" x1="332.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_49" y2="265.5" x2="389.5" y1="239.5" x1="389.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_51" y2="266.5" x2="403.5" y1="238.5" x1="403.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_52" y2="278.5" x2="344.5" y1="278.5" x1="379.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <rect stroke-dasharray="2,2" id="svg_53" height="189" width="181" y="108.5" x="271.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_54" y="50.5" x="311.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Input / Output</text>
+  <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_55" y="257.5" x="61.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Control</text>
+  <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="18" id="svg_56" y="273.5" x="83.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">circuits</text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_57" y="132.5" x="54.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">MAR</text>
+  <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_58" y="132.5" x="130.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">PC</text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_59" y="197.5" x="62.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">IR</text>
+  <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_60" y="196.5" x="128.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">IBR</text>
+  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_61" y="168.5" x="347.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">MBR</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="14" id="svg_63" y="219.5" x="305.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Logic and arithmetic</text>
+  <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="14" id="svg_64" y="233.5" x="338.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">circuits</text>
+  <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_65" y="282.5" x="313.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">AC</text>
+  <text style="cursor: move;" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="13" id="svg_66" y="282.5" x="392.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">MQ</text>
+  <rect id="svg_69" height="302.000013" width="459.999991" y="7.499987" x="7.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+ </g>
+</svg>
