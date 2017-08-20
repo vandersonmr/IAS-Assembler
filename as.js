@@ -13,6 +13,9 @@ var lexer = new jslex( {
               return e != "";
             });
 
+            if (splitedText.length > 3 || (splitedText[0].slice(1) == "word" && splitedText.length > 2))
+              throw "Too many arguments: '" + this.text + "' (line:" + (1 + this.line) + ", column:" + this.column + ")";
+
             return {type: "directive", content: splitedText[0].slice(1),
                     args: splitedText.slice(1)};
         },
@@ -115,7 +118,10 @@ function AS() {
           if (parsedTree[el].content == "org") {
             addr  = 2 * parsedTree[el].args[0];
             parsedTree[el] = undefined;
-          } else if (parsedTree[el].content in ["wfill", "skip"]) {
+          } else if (parsedTree[el].content == "skip") {
+            addr += 2 * parsedTree[el].args[0];
+            parsedTree[el] = undefined;
+          } else if (parsedTree[el].content == "wfill") {
             addr += 2 * parsedTree[el].args[0];
           } else if (parsedTree[el].content == "word") {
             if (addr % 2 != 0){
@@ -129,7 +135,7 @@ function AS() {
             addr -= (addr % (2 * parsedTree[el].args[0]));
             parsedTree[el] = undefined;
           } else {
-            throw "Invalid directive " + el.content;
+            throw "Invalid directive " + parsedTree[el].content;
           }
         }
       } else if (parsedTree[el].type == "label") {
@@ -161,22 +167,40 @@ function AS() {
       resultString += " ";
 
       if (parsedTree[el].type == "inst") {
-        parsedTree[el].arg = checkTable(labelTable, parsedTree[el].arg);
-        var target = " " + pad(Math.floor(parsedTree[el].arg));
+        if (isNumber(parsedTree[el].arg))
+          parsedTree[el].arg = parsedTree[el].arg * 2;
+        else 
+          parsedTree[el].arg = checkTable(labelTable, parsedTree[el].arg);
+
+        var target = " " + pad(Math.floor(parsedTree[el].arg / 2));
         var d = parsedTree[el].arg % 2;
         resultString += inst[parsedTree[el].content.toUpperCase()](target, d);
-      } else { // word or wfill
-        parsedTree[el].args[1] = checkTable(labelTable, parsedTree[el].args[1]);
+      } else {
+        if (isNumber(parsedTree[el].args[1]))
+          parsedTree[el].args[1] *= 2
+
+        parsedTree[el].args[1] = checkTable(labelTable, parsedTree[el].args[1])/2;
+
         for (var i = 0; i < parsedTree[el].args[0]; i++) {
+          if (i > 0)
+            resultString += "\n"+pad(Math.floor(parsedTree[el].addr / 2)+i) + " ";
           resultString += pad(parsedTree[el].args[1], 10);
         }
+
         right = 1;
       }
     }
     
     if (!right) resultString += " 00 000"
 
-    return resultString + "\n";
+    return (resultString + "\n").toUpperCase();
+  }
+
+  function isNumber(name) {
+    var target = parseInt(name);
+    if (isNaN(target)) 
+      return false
+    return true
   }
 
   function checkTable(table, name) {
@@ -185,7 +209,7 @@ function AS() {
       if (table[name] != undefined) 
         return table[name];
       return name; // label or undefined
-    }
+    } 
     return target;
   }
 
