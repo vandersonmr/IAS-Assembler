@@ -13,6 +13,9 @@ var lexer = new jslex( {
               return e != "";
             });
 
+            if (splitedText.length > 3 || (splitedText[0].slice(1) == "word" && splitedText.length > 2))
+              throw "Too many arguments: '" + this.text + "' (line:" + (1 + this.line) + ", column:" + this.column + ")";
+
             return {type: "directive", content: splitedText[0].slice(1),
                     args: splitedText.slice(1)};
         },
@@ -23,12 +26,21 @@ var lexer = new jslex( {
             });
             if(splitedText.length > 1){
               // extract argment
-              var instArg = ""
+              var instArg = "";
+              var optArgStr  = undefined;
               if(this.text.includes("(")){
                 var startIndex = this.text.indexOf("(") + 1;
                 var commaIndex = this.text.indexOf(",", startIndex);
                 var endIndex = this.text.indexOf(")", startIndex);
                 if(commaIndex != -1){
+                  optArgStr = this.text.slice(commaIndex + 1, endIndex).trim();
+                  if(optArgStr == "8:19")        { optArgStr = 0; }
+                  else if (optArgStr == "0:19" ) { optArgStr = 0; }
+                  else if (optArgStr == "28:39") { optArgStr = 1; }
+                  else if (optArgStr == "20:39") { optArgStr = 1; }
+                  else {
+                    throw "Invalid argument: " + optArgStr;
+                  }
                   endIndex = commaIndex;
                 }
                 instArg = this.text.slice(startIndex, endIndex).trim();
@@ -42,7 +54,7 @@ var lexer = new jslex( {
                 if(instArg != "") instMod += "X"; // LOAD MQ MX
               }
               return {type:"inst", content: splitedText[0] + instMod,
-                      arg: instArg};
+                      arg: instArg, optArg: optArgStr};
             }else{
               return {type:"inst", content: splitedText[0]};
             }
@@ -60,7 +72,7 @@ function AS() {
   var parsedTree = []
   var setTable = []
   var labelTable = []
-  var inst = 	{ 'LOAD'    : function (a, d) { return  "01"           + a; },
+  var inst =  { 'LOAD'    : function (a, d) { return  "01"           + a; },
                 'LOADQ'   : function (a, d) { return  "0A 000"          ; },
                 'LOADQX'  : function (a, d) { return  "09"           + a; },
                 'LOAD|'   : function (a, d) { return  "03"           + a; },
@@ -76,7 +88,7 @@ function AS() {
                 'RSH'     : function (a, d) { return  "15 000"          ; },
                 'LSH'     : function (a, d) { return  "14 000"          ; },
                 'JUMP'    : function (a, d) { return ["0D", "0E"][d] + a; },
-                'JUMP+'   : function (a, d) { return ["10", "0F"][d] + a; }
+                'JUMP+'   : function (a, d) { return ["0F", "10"][d] + a; }
               }
 
   this.assemble = function (code) {
@@ -87,7 +99,7 @@ function AS() {
 
     function insertInTree(el) {
       if (el) {
-        if (el.type == "inst" && !(el.content.toUpperCase() in inst)) 
+        if (el.type == "inst" && !(el.content.toUpperCase() in inst))
           throw "Invalid instruction " + el.content;
         parsedTree.push(el);
       }
@@ -115,7 +127,10 @@ function AS() {
           if (parsedTree[el].content == "org") {
             addr  = 2 * parsedTree[el].args[0];
             parsedTree[el] = undefined;
-          } else if (parsedTree[el].content in ["wfill", "skip"]) {
+          } else if (parsedTree[el].content == "skip") {
+            addr += 2 * parsedTree[el].args[0];
+            parsedTree[el] = undefined;
+          } else if (parsedTree[el].content == "wfill") {
             addr += 2 * parsedTree[el].args[0];
           } else if (parsedTree[el].content == "word") {
             if (addr % 2 != 0){
@@ -129,7 +144,7 @@ function AS() {
             addr -= (addr % (2 * parsedTree[el].args[0]));
             parsedTree[el] = undefined;
           } else {
-            throw "Invalid directive " + el.content;
+            throw "Invalid directive " + parsedTree[el].content;
           }
         }
       } else if (parsedTree[el].type == "label") {
@@ -161,28 +176,49 @@ function AS() {
       resultString += " ";
 
       if (parsedTree[el].type == "inst") {
-        parsedTree[el].arg = checkTable(labelTable, parsedTree[el].arg);
-        var target = " " + pad(Math.floor(parsedTree[el].arg));
+        if (isNumber(parsedTree[el].arg))
+          parsedTree[el].arg = parsedTree[el].arg * 2;
+        else
+          parsedTree[el].arg = checkTable(labelTable, parsedTree[el].arg);
+
+        var target = " " + pad(Math.floor(parsedTree[el].arg / 2));
         var d = parsedTree[el].arg % 2;
+        if(parsedTree[el].optArg){
+          d = parsedTree[el].optArg;
+        }
         resultString += inst[parsedTree[el].content.toUpperCase()](target, d);
-      } else { // word or wfill
-        parsedTree[el].args[1] = checkTable(labelTable, parsedTree[el].args[1]);
+      } else {
+        if (isNumber(parsedTree[el].args[1]))
+          parsedTree[el].args[1] *= 2
+
+        parsedTree[el].args[1] = checkTable(labelTable, parsedTree[el].args[1])/2;
+
         for (var i = 0; i < parsedTree[el].args[0]; i++) {
+          if (i > 0)
+            resultString += "\n"+pad(Math.floor(parsedTree[el].addr / 2)+i) + " ";
           resultString += pad(parsedTree[el].args[1], 10);
         }
+
         right = 1;
       }
     }
-    
+
     if (!right) resultString += " 00 000"
 
-    return resultString + "\n";
+    return (resultString + "\n").toUpperCase();
+  }
+
+  function isNumber(name) {
+    var target = parseInt(name);
+    if (isNaN(target))
+      return false
+    return true
   }
 
   function checkTable(table, name) {
     var target = parseInt(name);
     if (isNaN(target)) {
-      if (table[name] != undefined) 
+      if (table[name] != undefined)
         return table[name];
       return name; // label or undefined
     }
@@ -192,7 +228,7 @@ function AS() {
   function pad(number, n) {
     if(n == undefined) n = 3;
     var strNum = number.toString(16).padStart(n, "0");
-    if (strNum.length == 10) 
+    if (strNum.length == 10)
       return strNum.slice(0, 2) + " " + strNum.slice(2, 5) + " " +
              strNum.slice(5, 7) + " " + strNum.slice(7, 10);
     return strNum;

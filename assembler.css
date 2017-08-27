@@ -42,24 +42,24 @@ body > div {
 
 #header {
   top: 0;
-  height: 5.5vh;
+  height: 40px;
   border-bottom: black solid 2px;
   color: white;
   text-align: center;
-  font-size: 4vh;
-  line-height: 5.5vh;
+  font-size: 30px;
+  line-height: 40px;
 }
 
 #content {
-  top: calc(5.5vh + 2px);
-  height: calc(92.5vh - 4px);
+  top: 42px;
+  height: calc(100vh - 64px);
   border-bottom: black solid 2px;
 }
 
 .bottomBar {
   position: absolute;
-  top: 98vh;
-  height: 2vh;
+  top: calc(100vh - 20px);
+  height: 20px;
 }
 
 
