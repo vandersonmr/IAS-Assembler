@@ -1,13 +1,21 @@
+:root {
+  --bg-color: #222222;
+  --hi-bg-color: #1a1a1a;
+  --menu-bg-color: #111;
+  --hi-text-color: #fff;
+  --mid-text-color: gray;
+}
+
 h2{
   font: 14px Arial, sans-serif;
-  color:#fff;
+  color: var(--hi-text-color);
   padding: 10px;
   text-align: center;
 }
 
 .menuIcon {
   display: inline-block;
-  color: gray;
+  color: var(--mid-text-color);
   cursor: pointer;
   float: right;
   height: 20px;
@@ -16,13 +24,13 @@ h2{
 }
 
 .menuIcon:hover{
-  color: white;
+  color: var(--hi-text-color);
 }
 
 .run {
   display: inline-block;
   float: left;
-  color: gray;
+  color: var(--mid-text-color);
   cursor: pointer;
   height: 10px;
   font-size: 12px;
@@ -30,11 +38,15 @@ h2{
 }
 
 .run:hover {
-  color: white;
+  color: var(--hi-text-color);
+}
+
+body {
+  overflow: hidden;
 }
 
 body > div {
-  background-color: #222222;
+  background-color: var(--bg-color);
   position: absolute;
   left: 0;
   width: 100%;
@@ -44,7 +56,7 @@ body > div {
   top: 0;
   height: 40px;
   border-bottom: black solid 2px;
-  color: white;
+  color: var(--hi-text-color);
   text-align: center;
   font-size: 30px;
   line-height: 40px;
@@ -62,6 +74,39 @@ body > div {
   height: 20px;
 }
 
+#themeSelector {
+  float: right;
+  margin-right: 10px;
+  vertical-align: center;
+  line-height: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+#themeSelector > div{
+  display: inline-block;
+  position: relative;
+  top: 0;
+  height: 10px;
+  width: 20px;
+  border: 1px solid black;
+}
+
+#darkTM {
+  background-color: black;
+}
+
+#lightTM {
+  background-color: lightgray;
+}
+
+#sodaTM {
+  background-color: #222c28;
+}
+
+#translucentTM{
+  background-color: blue;
+}
 
 #fileListDiv {
   height: 80vh;
@@ -75,14 +120,14 @@ body > div {
   border-top: 1px solid #333;
   cursor: pointer;
   padding: 10px 5px;
-  color: #BBB;
-  background: #1a1a1a;
+  color: var(--mid-text-color);
+  background: var(--hi-bg-color);
   font: 12px Arial, sans-serif;
 }
 
 #fileListDiv li:hover{
-  background: #111;
-  color: #CCC;
+  background: var(--menu-bg-color);
+  color: var(--hi-text-color);
 }
 
 .simFrame {

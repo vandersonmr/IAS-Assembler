@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.7.0/js/perfect-scrollbar.min.js" charset="utf-8"></script>
     <script src="third-party/jquery.alertable.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/golden-layout/1.5.9/css/goldenlayout-base.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/golden-layout/1.5.9/css/goldenlayout-dark-theme.css">
+    <link id="gl_theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/golden-layout/1.5.9/css/goldenlayout-dark-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.7.0/css/perfect-scrollbar.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="third-party/jquery.alertable.css">
@@ -26,7 +26,12 @@
 
   </div>
   <div class="bottomBar">
-
+    <div id="themeSelector">
+      <div id="darkTM" onclick="changeTheme('dark');"> </div>
+      <div id="lightTM" onclick="changeTheme('light');"> </div>
+      <div id="sodaTM" onclick="changeTheme('soda');"> </div>
+      <div id="translucentTM" onclick="changeTheme('translucent');"> </div>
+    </div>
   </div>
   </body>
 </html>

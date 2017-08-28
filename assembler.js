@@ -27,6 +27,10 @@ var config = {
 };
 
 var myLayout, fileManagerContainer;
+var themeTable = {"light" : ["lightgray", "#D1D1D1", "#EEE", "black", "#444", "chrome"],
+                  "dark"  : ["#222",      "#1a1a1a", "#111", "white", "gray", "clouds_midnight"],
+                  "soda"  : ["#1e231e",    "#181915", "#111", "white", "gray", "mono_industrial"],
+                  "translucent" : ["#5c95e9", "#205188", "#011e3a", "white", "lightgray", "cobalt"]}
 
 var addMenuItem = function(title, text ) {
     var element = $( '<li>' + text.slice(4) + '</li>' );
@@ -69,10 +73,15 @@ var populateFiles = function () {
 
 var updateStorage = function () {
   populateFiles();
-  setTimeout(updateStorage, 1000);
+  // setTimeout(updateStorage, 1000);
 }
 
 window.onload = function () {
+
+  if(!localStorage.selectedTheme){
+    localStorage.selectedTheme = "dark";
+  }
+
   myLayout = new window.GoldenLayout( config, $('#content'));
 
   myLayout.registerComponent( 'simulator', function( container, state ){
@@ -110,7 +119,7 @@ window.onload = function () {
   myLayout.registerComponent( 'textEditor', function( container, state ){
     this.container = container;
     var editor = ace.edit(container.getElement()[0]);
-    editor.setTheme("ace/theme/clouds_midnight");
+    editor.setTheme("ace/theme/" + themeTable[localStorage.selectedTheme][5]);
     container.getElement()[0].style.fontSize='16px';
     //editor.getSession().setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;
@@ -230,9 +239,27 @@ window.onload = function () {
   });
 
   myLayout.init();
-  setTimeout(updateStorage, 100);
+  updateStorage();
+  //setTimeout(updateStorage, 100);
+  changeTheme(localStorage.selectedTheme);
 }
 
 window.onresize = function () {
   myLayout.updateSize();
+}
+
+
+
+function changeTheme(theme) {
+  $("#gl_theme").attr("href", "https://cdnjs.cloudflare.com/ajax/libs/golden-layout/1.5.9/css/goldenlayout-" + theme + "-theme.css")
+  document.documentElement.style.setProperty('--bg-color', themeTable[theme][0]);
+  document.documentElement.style.setProperty('--hi-bg-color', themeTable[theme][1]);
+  document.documentElement.style.setProperty('--menu-bg-color', themeTable[theme][2]);
+  document.documentElement.style.setProperty('--hi-text-color', themeTable[theme][3]);
+  document.documentElement.style.setProperty('--mid-text-color', themeTable[theme][4]);
+  localStorage.selectedTheme = theme;
+  var editors = myLayout.root.getComponentsByName("textEditor");
+  for (var ed in editors) {
+    if(editors[ed].container.editor.setTheme("ace/theme/" + themeTable[theme][5]));
+  }
 }
