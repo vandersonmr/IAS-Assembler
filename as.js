@@ -85,7 +85,7 @@ function AS() {
                 'LOAD|'   : function (a, d) { return  "03"           + a; },
                 'LOAD-'   : function (a, d) { return  "02"           + a; },
                 'STOR'    : function (a, d) { return  "21"           + a; },
-                'STORA'   : function (a, d) { return ["12", "13"][d] + a; },
+                'STA'     : function (a, d) { return ["12", "13"][d] + a; },
                 'ADD'     : function (a, d) { return  "05"           + a; },
                 'ADD|'    : function (a, d) { return  "07"           + a; },
                 'SUB'     : function (a, d) { return  "06"           + a; },

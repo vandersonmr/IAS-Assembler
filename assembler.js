@@ -195,7 +195,7 @@ window.onload = function () {
         {value: "DIV M(", score: 1000, meta: "Instruction"},
         {value: "LSH", score: 1000, meta: "Instruction"},
         {value: "RSH", score: 1000, meta: "Instruction"},
-        {value: "STOREA M(", score: 1000, meta: "Instruction"}
+        {value: "STA M(", score: 1000, meta: "Instruction"}
       ]);
     }
     })
@@ -339,7 +339,9 @@ window.onload = function () {
       if(!editor){
         runIcon.hide();
       }else{
-        localStorage.lastOpenedItem = container.getState().key;
+        if(container.getState().key){
+          localStorage.lastOpenedItem = container.getState().key;
+        }
         editor.focus();
         runIcon.show();
       }
