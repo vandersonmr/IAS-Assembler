@@ -5,7 +5,8 @@ var lexer = new jslex( {
         },
 
         "[a-zA-Z_][0-9a-zA-Z_]*:": function() { // labels
-            return {type:"label", content: this.text.slice(0,-1)};
+            return {type:"label", content: this.text.slice(0,-1), line: this.line,
+                    column: this.column};
         },
 
         "\\.[a-zA-Z]+ [^#\n]*": function() { // directives
@@ -14,10 +15,12 @@ var lexer = new jslex( {
             });
 
             if (splitedText.length > 3 || (splitedText[0].slice(1) == "word" && splitedText.length > 2))
-              throw "Too many arguments: '" + this.text + "' (line:" + (1 + this.line) + ", column:" + this.column + ")";
+              throw this.line + "|" + this.column + "|Too many arguments: '" +
+                    this.text + "' (" + this.line + ", " + this.column + ")";
 
             return {type: "directive", content: splitedText[0].slice(1),
-                    args: splitedText.slice(1)};
+                    args: splitedText.slice(1), line: this.line,
+                    column: this.column};
         },
 
         "([a-zA-Z\+]+ +[^#\n]*|[a-zA-Z]+)": function() { // instructions
@@ -39,7 +42,7 @@ var lexer = new jslex( {
                   else if (optArgStr == "28:39") { optArgStr = 1; }
                   else if (optArgStr == "20:39") { optArgStr = 1; }
                   else {
-                    throw "Invalid argument: " + optArgStr;
+                    throw this.line + "|" + this.column + "|Invalid argument: " + optArgStr;
                   }
                   endIndex = commaIndex;
                 }
@@ -52,17 +55,21 @@ var lexer = new jslex( {
               }else if(splitedText[1][1] == "Q"){ // LOAD MQ
                 instMod = splitedText[1][1];
                 if(instArg != "") instMod += "X"; // LOAD MQ MX
+                else instArg = 0;
               }
               return {type:"inst", content: splitedText[0] + instMod,
-                      arg: instArg, optArg: optArgStr};
+                      arg: instArg, optArg: optArgStr, line: this.line,
+                      column: this.column};
             }else{
-              return {type:"inst", content: splitedText[0]};
+              return {type:"inst", content: splitedText[0], arg: 0, line: this.line,
+              column: this.column};
             }
         },
 
         "[ \t\r\n]": undefined,
         ".": function() {
-            throw "Invalid character '" + this.text + "' (line:" + (1 + this.line) + ", column:" + this.column + ")";
+            throw this.line + "|" + this.column + "|Invalid character '" +
+                  this.text + "' (" + this.line + ", " + this.column + ")";
         }
     }
 } );
@@ -100,7 +107,7 @@ function AS() {
     function insertInTree(el) {
       if (el) {
         if (el.type == "inst" && !(el.content.toUpperCase() in inst))
-          throw "Invalid instruction " + el.content;
+          throw (el.line) + "|" + el.column + "|Invalid instruction " + el.content;
         parsedTree.push(el);
       }
     }
@@ -134,7 +141,8 @@ function AS() {
             addr += 2 * parsedTree[el].args[0];
           } else if (parsedTree[el].content == "word") {
             if (addr % 2 != 0){
-              throw "Word " + parsedTree[el].args[0] + " is not aligned"
+              throw (parsedTree[el].line) + "|" + parsedTree[el].column + "|Word "
+                    + parsedTree[el].args[0] + " is not aligned"
             }
             parsedTree[el].args[1] = parsedTree[el].args[0];
             parsedTree[el].args[0] = 1;
@@ -144,7 +152,8 @@ function AS() {
             addr -= (addr % (2 * parsedTree[el].args[0]));
             parsedTree[el] = undefined;
           } else {
-            throw "Invalid directive " + parsedTree[el].content;
+            throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                  "|Invalid directive " + parsedTree[el].content;
           }
         }
       } else if (parsedTree[el].type == "label") {
@@ -178,8 +187,15 @@ function AS() {
       if (parsedTree[el].type == "inst") {
         if (isNumber(parsedTree[el].arg))
           parsedTree[el].arg = parsedTree[el].arg * 2;
-        else
-          parsedTree[el].arg = checkTable(labelTable, parsedTree[el].arg);
+        else{
+          var trAddr = checkTable(labelTable, parsedTree[el].arg);
+          if(!isNumber(trAddr)){
+            throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                  "|" + parsedTree[el].arg + " is not defined";
+          }
+          parsedTree[el].arg = trAddr;
+        }
+
 
         var target = " " + pad(Math.floor(parsedTree[el].arg / 2));
         var d = parsedTree[el].arg % 2;

@@ -27,6 +27,21 @@ h2{
   color: var(--hi-text-color);
 }
 
+.menuItemIcon {
+  display: inline-block;
+  float: right;
+  color: var(--mid-text-color);
+  cursor: pointer;
+  height: 10px;
+  font-size: 12px;
+  line-height: 20px;
+  margin-left: 5px;
+}
+
+.menuItemIcon:hover{
+  color: var(--hi-text-color);
+}
+
 .run {
   display: inline-block;
   float: left;
@@ -90,6 +105,7 @@ body > div {
   height: 10px;
   width: 20px;
   border: 1px solid black;
+  cursor: pointer;
 }
 
 #darkTM {

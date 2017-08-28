@@ -32,33 +32,78 @@ var themeTable = {"light" : ["lightgray", "#D1D1D1", "#EEE", "black", "#444", "c
                   "soda"  : ["#1e231e",    "#181915", "#111", "white", "gray", "mono_industrial"],
                   "translucent" : ["#5c95e9", "#205188", "#011e3a", "white", "lightgray", "cobalt"]}
 
-var addMenuItem = function(title, text ) {
-    var element = $( '<li>' + text.slice(4) + '</li>' );
-    fileManagerContainer.append( element );
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
 
-   var newItemConfig = {
-        title: title,
-        type: 'component',
-        componentName: 'textEditor',
-        componentState: { key: text },
-        width: 0.7 * window.innerWidth
-    };
+  element.style.display = 'none';
+  document.body.appendChild(element);
 
+  element.click();
 
-    element.click(function(){
-      var activeEditor = myLayout.root.getComponentsByName("textEditor")[0];
-      if(activeEditor){
-        activeEditor.container.parent.parent.addChild( newItemConfig );
-      }else {
-        myLayout.root.contentItems[ 0 ].addChild( newItemConfig );
+  document.body.removeChild(element);
+}
+
+var addMenuItem = function(title, text, open) {
+  var downloadButton = $('<div class="menuItemIcon"><i class="fa fa-download" aria-hidden="true"></i></div>')
+  var deleteButton = $('<div class="menuItemIcon"><i class="fa fa-trash" aria-hidden="true"></i></div>')
+  var element = $( '<li>' + text.slice(4) + '</li>' );
+
+  fileManagerContainer.append( element );
+  element.append(deleteButton);
+  element.append(downloadButton);
+  downloadButton.click(function (e) {
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
+    download(title, localStorage[text]);
+  })
+  deleteButton.click(function (e) {
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
+    $.alertable.confirm('Are you sure you want to delete '+ title + "?").then(function() {
+      if(localStorage.lastOpenedItem == text){
+        localStorage.lastOpenedItem = "untitled";
       }
+      var editors = myLayout.root.getComponentsByName("textEditor");
+      for (var ed in editors) {
+        if(editors[ed].container.getState().key == text){
+          editors[ed].container.close();
+        }
+      }
+      localStorage.removeItem(text);
     });
+  })
 
-    myLayout.createDragSource( element, newItemConfig );
+
+  var newItemConfig = {
+      title: title,
+      type: 'component',
+      componentName: 'textEditor',
+      componentState: { key: text },
+      width: 0.7 * window.innerWidth
+  };
+
+
+  element.click(function(){
+    var activeEditor = myLayout.root.getComponentsByName("textEditor")[0];
+    if(activeEditor){
+      activeEditor.container.parent.parent.addChild( newItemConfig );
+    }else {
+      myLayout.root.contentItems[ 0 ].addChild( newItemConfig );
+    }
+  });
+
+  if(open){
+    element.click();
+  }
+  myLayout.createDragSource( element, newItemConfig );
 };
 
 var populateFiles = function () {
-  if(!document.getElementById('fileListDiv')){
+  if(!document.getElementById('fileListDiv')){ // multi window support
     myLayout.eventHub.emit( 'updateFiles', {} );
     return;
   }
@@ -73,13 +118,13 @@ var populateFiles = function () {
 
 var updateStorage = function () {
   populateFiles();
-  // setTimeout(updateStorage, 1000);
+  setTimeout(updateStorage, 1000);
 }
 
 window.onload = function () {
 
   if(!localStorage.selectedTheme){
-    localStorage.selectedTheme = "dark";
+    localStorage.selectedTheme = "light";
   }
 
   myLayout = new window.GoldenLayout( config, $('#content'));
@@ -93,6 +138,8 @@ window.onload = function () {
     })
   });
 
+  // file manager
+
   myLayout.registerComponent( 'fileManager', function( container, state ){
     this.container = container;
     fileManagerContainer = $( '<div id="fileListDiv"> </div>' );
@@ -103,14 +150,19 @@ window.onload = function () {
     container.getElement().append(fileManagerContainer);
     Ps.initialize(fileManagerContainer[0]);
     populateFiles();
-    newFile.click(function () {
+    newFile.click(function () { // create new file button
       $.alertable.prompt('File Name').then(function(data) {
         if(data.value == ""){
           $.alertable.alert("A file name must be provided.");
           return;
         }
         var newFileName = "CODE" + data.value;
+        if(newFileName in localStorage){
+          $.alertable.alert("File already exists.");
+          return;
+        }
         localStorage[newFileName] = "";
+        addMenuItem(data.value, newFileName, true);
         populateFiles();
       });
     })
@@ -121,6 +173,32 @@ window.onload = function () {
     var editor = ace.edit(container.getElement()[0]);
     editor.setTheme("ace/theme/" + themeTable[localStorage.selectedTheme][5]);
     container.getElement()[0].style.fontSize='16px';
+    editor.setOptions({enableBasicAutocompletion: true,
+                       enableSnippets: true,
+                       enableLiveAutocompletion: true});
+    editor.completers.push({
+    getCompletions: function(editor, session, pos, prefix, callback) {
+      callback(null, [
+        {value: "LOAD MQ", score: 1000, meta: "Instruction"},
+        {value: "LOAD MQ, M(", score: 1000, meta: "Instruction"},
+        {value: "STOR M(", score: 1000, meta: "Instruction"},
+        {value: "LOAD M(", score: 1000, meta: "Instruction"},
+        {value: "LOAD -M(", score: 1000, meta: "Instruction"},
+        {value: "LOAD |M(", score: 1000, meta: "Instruction"},
+        {value: "JUMP M(", score: 1000, meta: "Instruction"},
+        {value: "JUMP+ M(", score: 1000, meta: "Instruction"},
+        {value: "ADD M(", score: 1000, meta: "Instruction"},
+        {value: "ADD |M(", score: 1000, meta: "Instruction"},
+        {value: "SUB M(", score: 1000, meta: "Instruction"},
+        {value: "SUB |M(", score: 1000, meta: "Instruction"},
+        {value: "MUL M(", score: 1000, meta: "Instruction"},
+        {value: "DIV M(", score: 1000, meta: "Instruction"},
+        {value: "LSH", score: 1000, meta: "Instruction"},
+        {value: "RSH", score: 1000, meta: "Instruction"},
+        {value: "STOREA M(", score: 1000, meta: "Instruction"}
+      ]);
+    }
+    })
     //editor.getSession().setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;
     container.editor = editor;
@@ -131,7 +209,7 @@ window.onload = function () {
     }, this);
 
     // local storage
-    if(state.key){
+    if(state.key && state.key != "untitled"){
       editor.setValue(localStorage[state.key]);
       container.setTitle( state.key.slice(4) )
       editor.selection.clearSelection();
@@ -145,6 +223,29 @@ window.onload = function () {
       container.setTitle( state.key)
     }
 
+    container.on("destroy", function () {
+      if(state.key == "untitled"){
+        $.alertable.prompt('File Name').then(function(data) {
+          if(data.value == ""){
+            $.alertable.alert("A file name must be provided.");
+            return;
+          }
+          newFileName = "CODE" + data.value;
+          if(newFileName in localStorage){
+            $.alertable.alert("File already exists.");
+            return;
+          }
+          state.key = newFileName;
+          localStorage[state.key] = editor.getValue();
+          localStorage["untitled"] = "";
+          container.setTitle( state.key.slice(4) );
+          populateFiles();
+        }, function() {
+          addMenuItem("untitled", "untitled", true);
+      });
+    }
+    }, this);
+
     // key bindings
 
     editor.commands.addCommand({
@@ -157,7 +258,12 @@ window.onload = function () {
               $.alertable.alert("A file name must be provided.");
               return;
             }
-            state.key = "CODE" + data.value;
+            newFileName = "CODE" + data.value;
+            if(newFileName in localStorage){
+              $.alertable.alert("File already exists.");
+              return;
+            }
+            state.key = newFileName;
             localStorage[state.key] = editor.getValue();
             localStorage["untitled"] = "";
             container.setTitle( state.key.slice(4) );
@@ -180,7 +286,33 @@ window.onload = function () {
     editor.getSession().on('change', function(e) {
       localStorage[state.key] = editor.getValue();
       localStorage.lastOpenedItem = state.key;
+      // if (e.lines.length < 2){
+      //   return;
+      // }
+
     });
+    function updateEditor() {
+      if(!editor){
+        return;
+      }
+      editor.getSession().clearAnnotations();
+      try{
+        var as = new AS();
+        var binary = as.assemble(editor.getValue());
+      }
+      catch(err){
+        var splitedErr = err.split("|");
+        err = splitedErr.slice(2).toString()
+        editor.getSession().setAnnotations([{
+          row: parseInt(splitedErr[0]),
+          column: parseInt(splitedErr[1]),
+          text: err, // Or the Json reply from the parser
+          type: "error" // also warning and information
+        }]);
+      }
+      setTimeout(updateEditor, 1000);
+    }
+    setTimeout(updateEditor, 1000);
 
   });
 
@@ -198,30 +330,62 @@ window.onload = function () {
     stack.header.controlsContainer.prepend( runIcon );
 
     stack.on( 'activeContentItemChanged', function( contentItem ){
+      var container = contentItem.container;
       var editor = contentItem.container.editor;
       if(!editor){
         runIcon.hide();
       }else{
+        localStorage.lastOpenedItem = container.getState().key;
         editor.focus();
         runIcon.show();
       }
     });
 
-    // from the dropdown
+    // run code
     runIcon.click(function(){
       var container = stack.getActiveContentItem().container
       var editor = container.editor;
+      var state = container.getState();
       if(editor){
+        if(state.key == "untitled"){
+          $.alertable.prompt('Save your file before continuing! \nFile Name:').then(function(data) {
+            if(data.value == ""){
+              $.alertable.alert("A file name must be provided.");
+              return;
+            }
+            newFileName = "CODE" + data.value;
+            if(newFileName in localStorage){
+              $.alertable.alert("File already exists.");
+              return;
+            }
+            state.key = newFileName;
+            localStorage[state.key] = editor.getValue();
+            localStorage["untitled"] = "";
+            container.setTitle( state.key.slice(4) );
+            populateFiles();
+            runIcon.click();
+          });
+          return;
+        }
+        editor.getSession().clearAnnotations();
         try{
           var as = new AS();
           var binary = as.assemble(editor.getValue());
         }
         catch(err){
+          var splitedErr = err.split("|");
+          err = splitedErr.slice(2).toString()
+          editor.getSession().setAnnotations([{
+            row: parseInt(splitedErr[0]),
+            column: parseInt(splitedErr[1]),
+            text: err, // Or the Json reply from the parser
+            type: "error" // also warning and information
+          }]);
           $.alertable.alert("Error:\n" + err);
           return;
         }
         var newItemConfig = {
-             title: "Simulator (" + container.title + ")",
+             title: "Simulator (" + container.getState().key.slice(4) + ")",
              type: 'component',
              componentName: 'simulator',
              componentState: { text: binary },
