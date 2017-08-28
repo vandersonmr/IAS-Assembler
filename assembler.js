@@ -224,15 +224,20 @@ window.onload = function () {
     }
 
     container.on("destroy", function () {
-      if(state.key == "untitled"){
-        $.alertable.prompt('File Name').then(function(data) {
+      if(state.key == "untitled" && localStorage["untitled"] != ""){
+        $.alertable.prompt('Save your file!', {
+        okButton : '<button class="alertable-ok" type="button">Save</button>',
+        cancelButton : '<button class="alertable-cancel" type="button">Destroy</button>'
+        }).then(function(data) {
           if(data.value == ""){
             $.alertable.alert("A file name must be provided.");
+            addMenuItem("untitled", "untitled", true);
             return;
           }
           newFileName = "CODE" + data.value;
           if(newFileName in localStorage){
             $.alertable.alert("File already exists.");
+            addMenuItem("untitled", "untitled", true);
             return;
           }
           state.key = newFileName;
@@ -241,7 +246,7 @@ window.onload = function () {
           container.setTitle( state.key.slice(4) );
           populateFiles();
         }, function() {
-          addMenuItem("untitled", "untitled", true);
+
       });
     }
     }, this);
