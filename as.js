@@ -120,7 +120,6 @@ function AS() {
   function processAddress() {
     var addr = 0;
     for (var el in parsedTree) {
-      console.log(parsedTree[el])
       parsedTree[el].addr = addr;
       if (parsedTree[el].type == "inst"){
         addr++;
@@ -185,9 +184,14 @@ function AS() {
       resultString += " ";
 
       if (parsedTree[el].type == "inst") {
-        if (isNumber(parsedTree[el].arg))
-          parsedTree[el].arg = parsedTree[el].arg * 2;
-        else{
+        if (isNumber(parsedTree[el].arg)){
+          var trAddr = parsedTree[el].arg * 2;
+          if(!isNumber(trAddr)){
+            throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                  "|" + parsedTree[el].arg + " is not a valid number";
+          }
+          parsedTree[el].arg = trAddr;
+        }else{
           var trAddr = checkTable(labelTable, parsedTree[el].arg);
           if(!isNumber(trAddr)){
             throw (parsedTree[el].line) + "|" + parsedTree[el].column +
@@ -204,10 +208,20 @@ function AS() {
         }
         resultString += inst[parsedTree[el].content.toUpperCase()](target, d);
       } else {
-        if (isNumber(parsedTree[el].args[1]))
-          parsedTree[el].args[1] *= 2
-
-        parsedTree[el].args[1] = checkTable(labelTable, parsedTree[el].args[1])/2;
+        if (isNumber(parsedTree[el].args[1])){
+          var trAddr = parsedTree[el].args[1] * 2;
+          if(!isNumber(trAddr)){
+            throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                  "|" + parsedTree[el].args[1] + " is not a valid number";
+          }
+          parsedTree[el].args[1] = trAddr;
+        }
+        var trAddr = checkTable(labelTable, parsedTree[el].args[1])/2;
+        if(!isNumber(trAddr)){
+          throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                "|" + parsedTree[el].args[1] + " is not a valid number";
+        }
+        parsedTree[el].args[1] = trAddr;
 
         for (var i = 0; i < parsedTree[el].args[0]; i++) {
           if (i > 0)
@@ -243,7 +257,7 @@ function AS() {
 
   function pad(number, n) {
     if(n == undefined) n = 3;
-    var strNum = number.toString(16).padStart(n, "0");
+    var strNum = String("00000000000000000" + number.toString(16)).slice(-n);
     if (strNum.length == 10)
       return strNum.slice(0, 2) + " " + strNum.slice(2, 5) + " " +
              strNum.slice(5, 7) + " " + strNum.slice(7, 10);
