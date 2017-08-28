@@ -23,7 +23,7 @@ var lexer = new jslex( {
                     column: this.column};
         },
 
-        "([a-zA-Z\+]+ +[^#\n]*|[a-zA-Z]+)": function() { // instructions
+        "([a-zA-Z\\+]+ +M\\([^#\n\)]+\\)|[a-zA-Z\\+]+ +\-M\\([^#\n\)]+\\)|[a-zA-Z\\+]+ +\\|M\\([^#\n\)]+\\)\\||[a-zA-Z]+ MQ *, *M\\([^#\n\)]+\\)|[a-zA-Z\\+]+ MQ|[a-zA-Z]+)": function() { // instructions
             var splitedText = this.text.split(" ").filter(function (e) {
               return e != "";
             });
@@ -120,7 +120,7 @@ function AS() {
   function processAddress() {
     var addr = 0;
     for (var el in parsedTree) {
-      debugMsg(parsedTree[el])
+      console.log(parsedTree[el])
       parsedTree[el].addr = addr;
       if (parsedTree[el].type == "inst"){
         addr++;
