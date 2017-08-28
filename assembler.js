@@ -226,7 +226,6 @@ window.onload = function () {
     container.on("destroy", function () {
       if(state.key == "untitled" && localStorage["untitled"] != ""){
         $.alertable.prompt('Save your file!', {
-        okButton : '<button class="alertable-ok" type="button">Save</button>',
         cancelButton : '<button class="alertable-cancel" type="button">Destroy</button>'
         }).then(function(data) {
           if(data.value == ""){
