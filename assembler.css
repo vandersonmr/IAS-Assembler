@@ -139,6 +139,7 @@ body > div {
   color: var(--mid-text-color);
   background: var(--hi-bg-color);
   font: 12px Arial, sans-serif;
+  overflow: hidden;
 }
 
 #fileListDiv li:hover{

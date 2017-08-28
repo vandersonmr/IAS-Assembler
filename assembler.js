@@ -7,7 +7,7 @@ var config = {
         componentName: 'fileManager',
         title: "File Manager",
         componentState: { text: 'File Manager' },
-        width: 0.1 * window.innerWidth,
+        width: 0.2 * window.innerWidth,
         isClosable: false
         },
       {
@@ -17,10 +17,10 @@ var config = {
             type:'component',
             componentName: 'textEditor',
             componentState: { key: localStorage.lastOpenedItem },
-            width: 0.9 * window.innerWidth
+            width: 0.8 * window.innerWidth
             },
         ],
-        width: 0.9 * window.innerWidth
+        width: 0.8 * window.innerWidth
       }
     ]
   }]
