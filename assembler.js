@@ -329,7 +329,7 @@ window.onload = function () {
   myLayout.on( 'stackCreated', function( stack ){
 
 
-    var runIcon = $("<div class=\"run\"><i class=\"fa fa-play\"> Run Code</i></div>");
+    var runIcon = $("<div class=\"run\"><i class=\"fa fa-play\"> Load IAS Sim</i></div>");
 
     stack.header.controlsContainer.prepend( runIcon );
 
