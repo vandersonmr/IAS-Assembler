@@ -187,8 +187,146 @@ vetor:
 103 00 00 00 00 05
 `)
 
+tester.addTest("test10", 
+`
+.org 0x000
+LOAD M(0x3FF)
+SUB M(one)
 
-tester.addTest("testFinal", 
+laco:
+STOR M(jcounter)
+LOAD M(0x3FD)
+
+ADD M(icounter)
+STA M(multiplication,28:39)
+
+LOAD M(0x3FE)
+ADD M(icounter)
+
+STA M(summation,8:19)
+LOAD M(zero)
+
+summation:
+ADD M(000)
+STOR M(mulOperand)
+
+multiplication:
+LOAD MQ,M(mulOperand)
+MUL M(000)
+
+LOAD MQ
+ADD M(sum)
+
+STOR M(sum)
+LOAD M(icounter)
+
+ADD M(one)
+STOR M(icounter)
+
+LOAD M(jcounter)
+SUB M(one)
+
+STOR M(jcounter)
+JUMP+ M(laco,20:39)
+
+LOAD M(sum)
+JUMP M(0x400)
+
+.org 0x01A
+zero:
+.word 0
+mulOperand:
+.word 0
+sum:
+.word 0
+one:
+.word 1
+jcounter:
+.word 0
+icounter:
+`, 
+
+`
+000 01 3FF 06 01D
+001 21 01E 01 3FD
+002 05 01F 13 006
+003 01 3FE 05 01F
+004 12 005 01 01A
+005 05 000 21 01B
+006 09 01B 0B 000
+007 0A 000 05 01C
+008 21 01C 01 01F
+009 05 01D 21 01F
+00A 01 01E 06 01D
+00B 21 01E 10 001
+00C 01 01C 0D 400
+01A 00 000 00 000
+01B 00 000 00 000
+01C 00 000 00 000
+01D 00 000 00 001
+01E 00 000 00 000
+`)
+
+tester.addTest("test11", 
+`
+.org 0x000                       
+  LOAD MQ,M(g)
+  MUL M(x)
+  LOAD MQ
+  STOR M(y)
+  RSH
+  STOR M(k)
+laco:      
+  LOAD M(y)
+  DIV M(k)
+  LOAD MQ
+  ADD M(k)
+  RSH
+  STOR M(k)
+  LOAD M(counter)
+  SUB M(um)
+  STOR M(counter)
+  JUMP+ M(laco)
+  LOAD M(k)
+  JUMP M(0x400)
+  
+                    
+.org 0x100
+g: 
+  .word 0x000000000A
+k:
+  .word 0x0000000000
+y:
+  .word 0x0000000000
+counter:
+  .word 0x0000000009
+um:
+  .word 0x0000000001
+x:
+  .word 0x0000000DAC
+`, 
+
+`
+000 09 100 0B 105
+001 0A 000 21 102
+002 15 000 21 101
+003 01 102 0C 101
+004 0A 000 05 101
+005 15 000 21 101
+006 01 103 06 104
+007 21 103 0F 003
+008 01 101 0D 400
+100 00 000 00 00A
+101 00 000 00 000
+102 00 000 00 000
+103 00 000 00 009
+104 00 000 00 001
+105 00 000 00 DAC
+`)
+
+
+
+tester.addTest("test12", 
 `
 .set INICIO 0x000 # teste
 .org INICIO
@@ -214,7 +352,7 @@ vm: .word x1
 000 01 004 05 005
 001 0D 002 00 000
 002 15 000 21 006
-003 0F 000 00 000
+003 10 000 00 000
 004 00 000 00 000
 005 00 000 00 002
 006 00 000 00 000
