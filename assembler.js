@@ -240,6 +240,7 @@ window.onload = function () {
             return;
           }
           state.key = newFileName;
+          localStorage.lastOpenedItem = newFileName;
           localStorage[state.key] = editor.getValue();
           localStorage["untitled"] = "";
           container.setTitle( state.key.slice(4) );
@@ -268,6 +269,7 @@ window.onload = function () {
               return;
             }
             state.key = newFileName;
+            container.setState({key : newFileName});
             localStorage[state.key] = editor.getValue();
             localStorage["untitled"] = "";
             container.setTitle( state.key.slice(4) );
@@ -365,6 +367,7 @@ window.onload = function () {
               return;
             }
             state.key = newFileName;
+            container.setState({key : newFileName});
             localStorage[state.key] = editor.getValue();
             localStorage["untitled"] = "";
             container.setTitle( state.key.slice(4) );
