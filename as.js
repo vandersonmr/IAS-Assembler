@@ -103,6 +103,7 @@ function AS() {
     setTable   = []
     labelTable = []
     code       = code.replace("\t", " ");
+    if(code.slice(-1) != '\n') code += '\n';
 
     function insertInTree(el) {
       if (el) {
@@ -122,6 +123,7 @@ function AS() {
     for (var el in parsedTree) {
       parsedTree[el].addr = addr;
       if (parsedTree[el].type == "inst"){
+        parsedTree[el].arg = checkTable(setTable, parsedTree[el].arg);
         addr++;
       } else if (parsedTree[el].type == "directive") {
         if (parsedTree[el].content == "set"){
@@ -132,12 +134,24 @@ function AS() {
           parsedTree[el].args[1] = checkTable(setTable, parsedTree[el].args[1]);
           if (parsedTree[el].content == "org") {
             addr  = 2 * parsedTree[el].args[0];
+            if(!isNumber(addr)){
+              throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                    "| Invalid address parameter";
+            }
             parsedTree[el] = undefined;
           } else if (parsedTree[el].content == "skip") {
             addr += 2 * parsedTree[el].args[0];
+            if(!isNumber(addr)){
+              throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                    "| Invalid address parameter";
+            }
             parsedTree[el] = undefined;
           } else if (parsedTree[el].content == "wfill") {
             addr += 2 * parsedTree[el].args[0];
+            if(!isNumber(addr)){
+              throw (parsedTree[el].line) + "|" + parsedTree[el].column +
+                    "| Invalid address parameter";
+            }
           } else if (parsedTree[el].content == "word") {
             if (addr % 2 != 0){
               throw (parsedTree[el].line) + "|" + parsedTree[el].column + "|Word "

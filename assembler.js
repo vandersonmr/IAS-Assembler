@@ -215,6 +215,7 @@ window.onload = function () {
       editor.selection.clearSelection();
     } else {
       state.key = "untitled";
+      container.setState({key: "untitled"})
       if(!("untitled" in localStorage)){
         localStorage["untitled"] = "";
       }
@@ -268,12 +269,10 @@ window.onload = function () {
               $.alertable.alert("File already exists.");
               return;
             }
-            state.key = newFileName;
-            container.setState({key : newFileName});
-            localStorage[state.key] = editor.getValue();
+            localStorage[newFileName] = editor.getValue();
             localStorage["untitled"] = "";
-            container.setTitle( state.key.slice(4) );
-            populateFiles();
+            addMenuItem(data.value, newFileName, true);
+            container.close();
           });
         }else{
           localStorage[state.key] = editor.getValue();
@@ -307,6 +306,9 @@ window.onload = function () {
         var binary = as.assemble(editor.getValue());
       }
       catch(err){
+        if(typeof(err) != "string"){
+          console.log(err);
+        }
         var splitedErr = err.split("|");
         err = splitedErr.slice(2).toString()
         editor.getSession().setAnnotations([{
@@ -355,6 +357,7 @@ window.onload = function () {
       var editor = container.editor;
       var state = container.getState();
       if(editor){
+        console.log(state.key);
         if(state.key == "untitled"){
           $.alertable.prompt('Save your file before continuing! \nFile Name:').then(function(data) {
             if(data.value == ""){
@@ -366,12 +369,10 @@ window.onload = function () {
               $.alertable.alert("File already exists.");
               return;
             }
-            state.key = newFileName;
-            container.setState({key : newFileName});
-            localStorage[state.key] = editor.getValue();
+            localStorage[newFileName] = editor.getValue();
             localStorage["untitled"] = "";
-            container.setTitle( state.key.slice(4) );
-            populateFiles();
+            addMenuItem(data.value, newFileName, true);
+            container.close();
             runIcon.click();
           });
           return;
@@ -382,6 +383,9 @@ window.onload = function () {
           var binary = as.assemble(editor.getValue());
         }
         catch(err){
+          if(typeof(err) != "string"){
+            console.log(err);
+          }
           var splitedErr = err.split("|");
           err = splitedErr.slice(2).toString()
           editor.getSession().setAnnotations([{
